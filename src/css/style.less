@@ -1,0 +1,61 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #333333;
+}
+body {
+  background: #ffffff;
+}
+// 输入框部分 的总的高度
+@inputBoxH:50px;
+.chartRoom {
+  background: #f9f9f9;
+  box-shadow: 0 0 10px #f9f9f9;
+  // border: 1px solid #cccccc;
+  height: 100vh;
+  max-height: 800px;
+  width: 100%;
+  max-width: 500px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  .content {
+    width: 100%;
+    height: calc(100% - @inputBoxH);
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 14px;
+  }
+  .inputBox {
+    width: 100%;
+    height: @inputBoxH;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 14px;
+    border-top: 1px solid #eeeeee;
+    input {
+      width: 78%;
+      padding: 0 10px;
+      height: 30px;
+      outline: none;
+      border: 1px solid #eeeeee;
+      border-radius: 30px;
+      box-sizing: border-box;
+    }
+    button{
+        box-sizing: border-box;
+        width: 20%;
+        border:none;
+        background: #41a19c;
+        color: #ffffff;
+        padding: 6.5px 0;
+        border-radius: 30px;
+        outline: none;
+    }
+  }
+}
