@@ -20,6 +20,12 @@ class CQvue {
             new Controller(this);
             // this.data = options.data;
         }
+        // 获取方法
+        if (options.methods && typeof options.methods === 'object'){
+            Object.keys(options.methods).forEach(name => {
+                this[name] = options.methods[name];
+            });
+        }
 
         // 渲染视图层
         new view(options.id, this);

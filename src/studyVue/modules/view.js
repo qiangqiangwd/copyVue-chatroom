@@ -13,11 +13,44 @@ class View {
         this.loopGetDom(this.el); // 循环获取所有节点元素
     }
     // 这里先对本身节点进行操作后再去循环子节点
-    loopGetDom(dom) {
+    // canIchangeText 能否改变子节点的内容（默认true）
+    loopGetDom(dom, canIchangeText = true) {
         // 根据对应节点进行对应的操作 1 - 标签节点、3 - 文字节点
         switch (dom.nodeType) {
             case 1:
-                new moduleFloor(dom,this.data); // 进入模型层
+                //  对标签的属性进行解析
+                let attrArr = [{
+                    name: 'v-for', // 属性名称
+                    funName: 'loopElem' // 运行的函数名称
+                }, {
+                    name: 'key',
+                }];
+                let attributes = dom.attributes; // 获取节点当前所有的属性
+                Array.prototype.slice.call(attributes).forEach(attr => {
+                    let nodeName = attr.nodeName;
+                    // 数据处理，双向数据绑定暂不写在那里
+                    if (/^v-/.test(nodeName) && nodeName != 'v-model') {
+                        let attrName = nodeName.replace(/^v-/, '');
+                        // 属性对应内容
+                        (new moduleFloor(dom, this.data))[attrName + 'DataFun'](attr.nodeValue); // 运行对应的函数并上传对应参数
+                        dom.removeAttribute(nodeName); // 删除该属性，不在显示
+                    }
+                    // 方法处理
+                    if (/^@/.test(nodeName)) {
+                        let methods = nodeName.replace(/^@/, '');
+                        // 添加的方法、函数名称
+                        (new moduleFloor(dom, this.data))['addMethod'](methods, attr.nodeValue); // 运行对应的函数并上传对应参数
+                        dom.removeAttribute(nodeName); // 删除该属性，不在显示
+                    }
+                });
+                attrArr.forEach((item, index) => {
+                    let attr = dom.getAttribute(item.name);
+                    if (attr) {
+                        dom.removeAttribute(item.name); // 删除该属性，不在显示
+                        (new moduleFloor(dom, this.data))[item.funName](attr); // 运行对应的函数并上传对应参数
+                        canIchangeText = false; // 不再对其后续节点文字进行变动
+                    }
+                });
 
                 // 对 输入框 进行双向数据绑定
                 if (dom.nodeName === 'INPUT' || dom.nodeName === 'TEXTAREA') {
@@ -26,7 +59,7 @@ class View {
                 break
             case 3:
                 let txt = dom.nodeValue.trim(); // 去除空格、换行空白符号
-                if (txt) { // 若文字不为空
+                if (txt && canIchangeText) { // 若文字不为空且可以对文字进行变动
                     // let txtReg = /{{((?!}}).)*}}/g; // 在 {{}} 中不包含 }} 的
                     let txtReg = /\{\{[a-z|A-Z|0-9|\+|\-|\*|\/|\.|\(|\)|\r|\n|\s]+\}\}/g; // 在 {{}} 中不包含 }} 的
                     let txtOpt = txt.match(txtReg); // 含有参数（{{}} 内的）的内容
@@ -88,7 +121,7 @@ class View {
         let childNode = dom.childNodes;
         if (childNode.length > 0) { // 若包含子节点，循环子节点
             Array.prototype.slice.call(childNode).forEach(node => {
-                this.loopGetDom(node);
+                this.loopGetDom(node, canIchangeText);
             });
         }
     }

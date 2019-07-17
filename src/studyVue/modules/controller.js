@@ -26,7 +26,8 @@ class Controller {
             if (Array.isArray(value)) {
                 // 将我们要监听的数组的原型指针指向自定义的空数组对象
                 // 先暂时只能监听到一级层次内的数组
-                value.__proto__ = this.arrayMethods(JSON.parse(JSON.stringify(value)), uid);
+                // value.__proto__ = this.arrayMethods(JSON.parse(JSON.stringify(value)), uid);
+                value.__proto__ = this.arrayMethods(value, uid);
             }
             this.walk(value);
         }
@@ -65,19 +66,20 @@ class Controller {
 
             // 将 push、pop 等方法封装好的方法定义在对象 arrayAugmentations 属性上
             arrayAugmentations[method] = function () {
-                let newArr = arr;
+                let newArr = JSON.parse(JSON.stringify(arr)); // 获取当前数组（深度拷贝）
                 // 当为添加时
+                let changeArr = []; // 上传发生改变的数组
                 if (method === 'push') {
                     Array.prototype.slice.call(arguments).forEach(item => {
+                        changeArr.push(item);
                         newArr.push(item);
                     });
-                    console.log('数组发生改变！', arr, uid);
                 }
-                // 通知更新
-                _this.dep.notify(newArr, arr, uid);
-                // 通知更新后更新当前数据
-                arr = newArr; 
+                // 通知更新：改变后的数组、类型、uid
+                _this.dep.notify(changeArr, method, uid);
 
+                arr = newArr; // 改变原数组
+                arr.__proto__ = _this.arrayMethods(arr, uid); // 再重新设置监听
                 return original.apply(this, arguments);
             }
         });

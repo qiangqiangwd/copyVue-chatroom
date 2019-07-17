@@ -13,24 +13,20 @@
 <body>
     <div class="chartRoom" id="chartRoom">
         <div class="content">
-            这是第一个值： {{opt.num3 - opt.num2}} sasas 第二个值：{{content}}
             <div>数组循环部分：</div>
             <div class='demoDiv'>
                 <div v-for="item in arr">
-                    <div>人：</div>
-                    <div>名字：{{item.name}}后缀{{opt.num2}}</div>
+                    <div>名字：{{item.name}}</div>
                     <div>id：{{item.id}}</div>
-                    <div>{{content}}</div>
+                    <div>{{item.msg}}</div>
                 </div>
             </div>
-            <textarea v-model="content"></textarea>
         </div>
 
         <div class="inputBox">
-            <input type="text">
-            <button>发送</button>
+            <input type="text" v-model="msg" placeholder="请输入消息">
+            <button @click="sendMsg">发送</button>
         </div>
     </div>
 </body>
-
 </html>

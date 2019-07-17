@@ -5,30 +5,19 @@ import CQvue from './studyVue/index';
 const ChartRoom = new CQvue({
     id: '#chartRoom',
     data: {
-        content: '内容内容1',
-        title: '标题',
-        name: '888',
-        opt: {
-            num2: 33,
-            num3: 66,
-            testObj: {
-                aaaa: 'aaaa'
-            }
-        },
+        msg: '消息内容',
         arr: [
             {
                 name: 'cqq',
-                id: 1
+                id: 1,
+                msg:'66666'
             },
-            {
-                name: 'zhy',
-                id: 2
-            },
-            {
-                name: 'yyy',
-                id: 3
-            }
         ],
+    },
+    methods:{
+        sendMsg(){
+            console.log('发送消息', this.msg)
+        }
     }
 });
 
