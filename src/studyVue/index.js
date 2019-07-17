@@ -11,19 +11,18 @@ class CQvue {
     constructor(options = {}) {
         // 先对设置的数据进行监听
         // 后续再在 this 中添加参数时就不会监听到
-        this.data = options.data;
         if (options.data && typeof options.data === 'object') {
-            // 这里只监听 data 中和设置在 this中的data 参数
             // 将 data 参数放入 this 中
             Object.keys(options.data).forEach(name => {
                 this[name] = options.data[name];
             });
+            // 这里只监听 options.data 中的参数
             new Controller(this);
+            // this.data = options.data;
         }
-        
 
         // 渲染视图层
-        this.view = new view(options.id, this.data);
+        new view(options.id, this);
     }
 }
 

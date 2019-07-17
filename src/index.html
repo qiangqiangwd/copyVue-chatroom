@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>chatroom</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
+
 <body>
-    <div class="chartRoom"  id="chartRoom">
+    <div class="chartRoom" id="chartRoom">
         <div class="content">
-           这是第一个值： {{opt.num2 + opt.num3}} sasas  第二个值：{{content}}
-            <div>{{content}}</div>
-            <textarea  v-model="content"></textarea>
+            这是第一个值： {{opt.num3 - opt.num2}} sasas 第二个值：{{content}}
+            <div>数组循环部分：</div>
+            <div class='demoDiv'>
+                <div v-for="item in arr">
+                    <div>人：</div>
+                    <div>名字：{{item.name}}后缀{{opt.num2}}</div>
+                    <div>id：{{item.id}}</div>
+                    <div>{{content}}</div>
+                </div>
+            </div>
+            <textarea v-model="content"></textarea>
         </div>
-        
+
         <div class="inputBox">
             <input type="text">
             <button>发送</button>
         </div>
     </div>
 </body>
+
 </html>

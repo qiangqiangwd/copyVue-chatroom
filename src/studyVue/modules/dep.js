@@ -14,10 +14,10 @@ class Dep {
         }
     }
     // 通知并进行更新
-    notify(newVal, oldVal, pName) {
+    notify(newVal, oldVal, uid) {
+        // console.log(this.dependences, uid);
         this.dependences.forEach(item => {
-            console.log(item, pName);
-            if (item.name === pName) {
+            if (item.uid === uid) {
                 item.callback && item.callback(newVal, oldVal);
             }
         });

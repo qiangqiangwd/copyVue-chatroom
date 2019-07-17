@@ -2,6 +2,8 @@
  * 视图层
  */
 import watcher from './watcher' // 监听器
+import moduleFloor from './module' // 模型层
+import $ from './mainFun' // 公共参数
 
 class View {
     constructor(id = '#app', data) {
@@ -10,16 +12,13 @@ class View {
 
         this.loopGetDom(this.el); // 循环获取所有节点元素
     }
+    // 这里先对本身节点进行操作后再去循环子节点
     loopGetDom(dom) {
-        let childNode = dom.childNodes;
-        if (childNode.length > 0) { // 若包含子节点，循环子节点
-            Array.prototype.slice.call(childNode).forEach(node => {
-                this.loopGetDom(node);
-            });
-        }
         // 根据对应节点进行对应的操作 1 - 标签节点、3 - 文字节点
         switch (dom.nodeType) {
             case 1:
+                new moduleFloor(dom,this.data); // 进入模型层
+
                 // 对 输入框 进行双向数据绑定
                 if (dom.nodeName === 'INPUT' || dom.nodeName === 'TEXTAREA') {
                     this.twoWayBind(dom);
@@ -29,7 +28,7 @@ class View {
                 let txt = dom.nodeValue.trim(); // 去除空格、换行空白符号
                 if (txt) { // 若文字不为空
                     // let txtReg = /{{((?!}}).)*}}/g; // 在 {{}} 中不包含 }} 的
-                    let txtReg = /\{\{[a-z|A-Z|0-9|\+|\-|\*|\/|\.|\(|\)|\r|\n|\s]*\}\}/g; // 在 {{}} 中不包含 }} 的
+                    let txtReg = /\{\{[a-z|A-Z|0-9|\+|\-|\*|\/|\.|\(|\)|\r|\n|\s]+\}\}/g; // 在 {{}} 中不包含 }} 的
                     let txtOpt = txt.match(txtReg); // 含有参数（{{}} 内的）的内容
                     if (txtOpt) {
                         let txtOth = txt.split(txtReg); // 其他内容
@@ -71,6 +70,7 @@ class View {
 
                                 //  设置监听器
                                 let posIndex = totalArr.length - 1; // 参数当前位置
+                                // console.log('设置watcher时',dom,data.name);
                                 new watcher(this.data, data.name, (newVal, oldVal) => {
                                     totalArr[posIndex].value = newVal; // 设置新值
                                     dom.nodeValue = mergeStr(totalArr); // 改变值
@@ -83,6 +83,13 @@ class View {
                     }
                 }
                 break
+        }
+
+        let childNode = dom.childNodes;
+        if (childNode.length > 0) { // 若包含子节点，循环子节点
+            Array.prototype.slice.call(childNode).forEach(node => {
+                this.loopGetDom(node);
+            });
         }
     }
     // 判断数据中是否含有 + - * / , 对操作进行数据划分
@@ -102,7 +109,6 @@ class View {
         } else {
             resArr.push({
                 name: name,
-                // value: this.data[name],
                 type: '',
             });
         }
@@ -114,11 +120,11 @@ class View {
     twoWayBind(dom) {
         let model = dom.getAttribute('v-model');
         if (model) {
+            dom.removeAttribute('v-model'); // 移除 v-model 属性
             let _this = this;
-            model.split('.');
             dom.addEventListener('input', (e) => {
-                _this.data[model] = dom.value;
-                console.log(_this.data,model,dom.value);
+                // 利用 eval 动态赋值
+                $.setByEval(_this.data, model, dom.value);
             });
 
             new watcher(this.data, model, (newVal, oldVal) => {

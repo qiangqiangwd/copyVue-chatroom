@@ -4,19 +4,31 @@ import CQvue from './studyVue/index';
 
 const ChartRoom = new CQvue({
     id: '#chartRoom',
-    data:{
-        content:'内容内容1',
-        title:'标题',
-        name:'888',
-        opt:{
-            num1:'11',
-            num2:'33',
-            num3:'66',
-            testObj:{
-                aaaa:'aaaa'
+    data: {
+        content: '内容内容1',
+        title: '标题',
+        name: '888',
+        opt: {
+            num2: 33,
+            num3: 66,
+            testObj: {
+                aaaa: 'aaaa'
             }
         },
-        // arr:[],
+        arr: [
+            {
+                name: 'cqq',
+                id: 1
+            },
+            {
+                name: 'zhy',
+                id: 2
+            },
+            {
+                name: 'yyy',
+                id: 3
+            }
+        ],
     }
 });
 
